@@ -5,6 +5,14 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
 import random
+import textwrap
+
+# ── Helper: strips Python indentation before passing HTML to st.markdown.
+# Without this, lines indented 4+ spaces are treated as Markdown code blocks,
+# causing raw HTML to appear as source code instead of rendered output.
+def render_html(html_str: str):
+    """Dedent + render an HTML string safely."""
+    st.markdown(textwrap.dedent(html_str).strip(), unsafe_allow_html=True)
 
 # ════════════════════════════════════════════════
 #  PAGE CONFIG
@@ -341,44 +349,44 @@ body                   { background-color: #070F1F !important; margin: 0; paddin
 current_time = datetime.now().strftime("%I:%M %p")
 current_date = datetime.now().strftime("%d %b %Y")
 
-st.markdown(f"""
-<div id="navbar">
-    <div id="logo">
-        <i class="ri-car-fill"></i>
-        <div id="logo-text">
-            <h1>Traffic Prediction System</h1>
-            <p>Smart City, Better City</p>
+render_html(f"""
+    <div id="navbar">
+        <div id="logo">
+            <i class="ri-car-fill"></i>
+            <div id="logo-text">
+                <h1>Traffic Prediction System</h1>
+                <p>Smart City, Better City</p>
+            </div>
+        </div>
+        <div id="nav-right">
+            <div id="first"><h4>🌤️ 28°C</h4></div>
+            <div id="second"><h4>📅 {current_date}</h4></div>
+            <div id="third"><h4>🕒 {current_time}</h4></div>
         </div>
     </div>
-    <div id="nav-right">
-        <div id="first"><h4>🌤️ 28°C</h4></div>
-        <div id="second"><h4>📅 {current_date}</h4></div>
-        <div id="third"><h4>🕒 {current_time}</h4></div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+""")
 
 # ════════════════════════════════════════════════
 #  SIDEBAR — matches frontend slidebar exactly
 # ════════════════════════════════════════════════
 with st.sidebar:
-    st.markdown("""
-    <div class="nav-item active-nav">
-        <i class="ri-dashboard-fill"></i> Dashboard
-    </div>
-    <div class="nav-item"><i class="ri-bar-chart-box-fill"></i> Prediction</div>
-    <div class="nav-item"><i class="ri-line-chart-fill"></i> Analytics</div>
-    <div class="nav-item"><i class="ri-map-pin-line"></i> Traffic Map</div>
-    <div class="nav-item"><i class="ri-history-line"></i> History</div>
-    <div class="nav-item"><i class="ri-notification-3-line"></i> Alerts</div>
-    <div class="nav-item"><i class="ri-file-chart-line"></i> Reports</div>
-    <div class="nav-item"><i class="ri-settings-3-line"></i> Settings</div>
-    <div class="nav-item"><i class="ri-information-line"></i> About</div>
-    <div id="side-card">
-        <h4>Smart Traffic AI</h4>
-        <p>Predict city traffic with AI analytics.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    render_html("""
+        <div class="nav-item active-nav">
+            <i class="ri-dashboard-fill"></i> Dashboard
+        </div>
+        <div class="nav-item"><i class="ri-bar-chart-box-fill"></i> Prediction</div>
+        <div class="nav-item"><i class="ri-line-chart-fill"></i> Analytics</div>
+        <div class="nav-item"><i class="ri-map-pin-line"></i> Traffic Map</div>
+        <div class="nav-item"><i class="ri-history-line"></i> History</div>
+        <div class="nav-item"><i class="ri-notification-3-line"></i> Alerts</div>
+        <div class="nav-item"><i class="ri-file-chart-line"></i> Reports</div>
+        <div class="nav-item"><i class="ri-settings-3-line"></i> Settings</div>
+        <div class="nav-item"><i class="ri-information-line"></i> About</div>
+        <div id="side-card">
+            <h4>Smart Traffic AI</h4>
+            <p>Predict city traffic with AI analytics.</p>
+        </div>
+    """)
 
 # ════════════════════════════════════════════════
 #  SESSION STATE — stores prediction result across reruns
@@ -404,8 +412,8 @@ top_col1, top_col2 = st.columns([1.1, 0.9], gap="medium")
 with top_col1:
     with st.container(border=True):
 
-        st.markdown('<p class="card-title">🔮 Predict Traffic</p>', unsafe_allow_html=True)
-        st.markdown('<p class="card-subtitle">Fill the details below to get a traffic prediction</p>', unsafe_allow_html=True)
+        render_html('<p class="card-title">🔮 Predict Traffic</p>')
+        render_html('<p class="card-subtitle">Fill the details below to get a traffic prediction</p>')
 
         # ── Two sub-columns matching the original left/right split ──
         left_in, right_in = st.columns(2, gap="small")
@@ -528,40 +536,43 @@ with top_col1:
 with top_col2:
     with st.container(border=True):
 
-        st.markdown('<p class="card-title">📊 Traffic Level</p>', unsafe_allow_html=True)
+        render_html('<p class="card-title">📊 Traffic Level</p>')
 
-        # Dynamic result card — mirrors the frontend #level card exactly
-        st.markdown(f"""
-        <div class="result-content">
+        # ── Build the result HTML as a plain string first (no indentation in the
+        #    string itself) so Markdown never mistakes the content for a code block.
+        _tc   = st.session_state.traffic_class
+        _tt   = st.session_state.traffic_text
+        _ts   = st.session_state.status_text
+        _cb   = st.session_state.congestion_badge
+        _prob = st.session_state.probability
 
-            <div class="left-result">
-                <div class="traffic-wrapper">
-                    <div class="ring"></div>
-                    <i class="ri-car-fill"></i>
-                </div>
-                <h1 class="traffic-level {st.session_state.traffic_class}">
-                    {st.session_state.traffic_text}
-                </h1>
-                <p class="traffic-status">{st.session_state.status_text}</p>
-            </div>
-
-            <div class="traffic-info">
-                <div class="info-box">
-                    <h4>Congestion</h4>
-                    {st.session_state.congestion_badge}
-                </div>
-                <div class="info-box">
-                    <h4>Probability</h4>
-                    <span>{st.session_state.probability}</span>
-                </div>
-                <div class="info-box">
-                    <h4>Status</h4>
-                    <span>{st.session_state.status_text}</span>
-                </div>
-            </div>
-
-        </div>
-        """, unsafe_allow_html=True)
+        result_html = (
+            '<div class="result-content">'
+                '<div class="left-result">'
+                    '<div class="traffic-wrapper">'
+                        '<div class="ring"></div>'
+                        '<i class="ri-car-fill"></i>'
+                    '</div>'
+                    f'<h1 class="traffic-level {_tc}">{_tt}</h1>'
+                    f'<p class="traffic-status">{_ts}</p>'
+                '</div>'
+                '<div class="traffic-info">'
+                    '<div class="info-box">'
+                        '<h4>Congestion</h4>'
+                        f'{_cb}'
+                    '</div>'
+                    '<div class="info-box">'
+                        '<h4>Probability</h4>'
+                        f'<span>{_prob}</span>'
+                    '</div>'
+                    '<div class="info-box">'
+                        '<h4>Status</h4>'
+                        f'<span>{_ts}</span>'
+                    '</div>'
+                '</div>'
+            '</div>'
+        )
+        st.markdown(result_html, unsafe_allow_html=True)
 
         # After prediction: also show a Plotly gauge (from original app.py logic)
         if st.session_state.traffic_value > 0:
@@ -669,8 +680,8 @@ with st.container(border=True):
 # ════════════════════════════════════════════════
 #  FOOTER
 # ════════════════════════════════════════════════
-st.markdown("""
-<div style="text-align:center;color:#9CA3AF;font-size:12px;margin:24px 0 12px;padding-top:16px;border-top:1px solid #243041;">
-    🚦 Smart Traffic Prediction System &nbsp;|&nbsp; AI + Machine Learning + Streamlit Dashboard
-</div>
-""", unsafe_allow_html=True)
+render_html("""
+    <div style="text-align:center;color:#9CA3AF;font-size:12px;margin:24px 0 12px;padding-top:16px;border-top:1px solid #243041;">
+        🚦 Smart Traffic Prediction System &nbsp;|&nbsp; AI + Machine Learning + Streamlit Dashboard
+    </div>
+""")
