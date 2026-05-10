@@ -299,7 +299,7 @@ body { background: #070F1F !important; margin: 0; padding: 0; }
 }
 
 </style>
-""", unsafe_allow_html=True)
+""")
 
 # ══════════════════════════════════════════════════════════════
 #  SESSION STATE — initialise defaults once
