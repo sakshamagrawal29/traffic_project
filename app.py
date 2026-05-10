@@ -44,7 +44,7 @@ except Exception as _e:
 #  • Tooltip dbl  → pointer-events:none on radio <p>, suppressed baseweb tooltip
 #  • Responsive   → @media queries for narrow screens
 # ══════════════════════════════════════════════════════════════
-st.markdown("""
+html("""
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"/>
 <style>
@@ -53,7 +53,9 @@ st.markdown("""
 #MainMenu, header[data-testid="stHeader"], footer { display: none !important; }
 /* Hide the sidebar's internal ← collapse button so it can never be accidentally collapsed.
    Do NOT hide collapsedControl — that's the ☰ re-open button; hiding it locks users out. */
-[data-testid="stSidebarCollapseButton"] { display: none !important; }
+[data-testid="stSidebarCollapseButton"] {
+    display: none !important;
+}
 
 /* ── GLOBAL ────────────────────────────────────────────────── */
 *, *::before, *::after { font-family: 'Poppins', sans-serif !important; box-sizing: border-box; }
