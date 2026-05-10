@@ -45,17 +45,11 @@ except Exception as _e:
 #  • Responsive   → @media queries for narrow screens
 # ══════════════════════════════════════════════════════════════
 html("""
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 
 /* ── RESET STREAMLIT CHROME ────────────────────────────────── */
 #MainMenu, header[data-testid="stHeader"], footer { display: none !important; }
-/* Hide the sidebar's internal ← collapse button so it can never be accidentally collapsed.
-   Do NOT hide collapsedControl — that's the ☰ re-open button; hiding it locks users out. */
-[data-testid="stSidebarCollapseButton"] {
-    display: none !important;
-}
 
 /* ── GLOBAL ────────────────────────────────────────────────── */
 *, *::before, *::after { font-family: 'Poppins', sans-serif !important; box-sizing: border-box; }
